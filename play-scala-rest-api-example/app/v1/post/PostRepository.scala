@@ -6,6 +6,7 @@ import akka.actor.ActorSystem
 import play.api.libs.concurrent.CustomExecutionContext
 import play.api.{Logger, MarkerContext}
 
+import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
 
 final case class PostData(id: PostId, title: String, body: String)
@@ -48,7 +49,7 @@ class PostRepositoryImpl @Inject()()(implicit ec: PostExecutionContext)
 
   private val logger = Logger(this.getClass)
 
-  private val postList = List(
+  private val postList = ListBuffer(
     PostData(PostId("1"), "title 1", "blog post 1"),
     PostData(PostId("2"), "title 2", "blog post 2"),
     PostData(PostId("3"), "title 3", "blog post 3"),
@@ -75,6 +76,7 @@ class PostRepositoryImpl @Inject()()(implicit ec: PostExecutionContext)
   def create(data: PostData)(implicit mc: MarkerContext): Future[PostId] = {
     Future {
       logger.trace(s"create: data = $data")
+      postList += data
       data.id
     }
   }
